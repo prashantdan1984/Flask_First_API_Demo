@@ -1,5 +1,6 @@
 #import mysql.connector  #then write mysql.connector.connect
 import mysql.connector as mysql # then write mysql.connect
+import json
 class user_model():
     def __init__(self):
         try:
@@ -24,4 +25,8 @@ class user_model():
         self.cur.execute("SELECT * FROM users")
         result= self.cur.fetchall()
         print(result)
-        return "This is user signup model4" + " " +name
+        if len(result) > 0:
+            return json.dumps(result)
+        else:
+            return "No Data Found"
+        #return "This is user signup model4" + " " +name
