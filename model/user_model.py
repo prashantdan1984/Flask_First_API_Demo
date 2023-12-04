@@ -69,8 +69,8 @@ class user_model():
         
         if type(userdata) is str:
             print("This line will be executed", type(userdata))
-            self.cur.execute(f"DELETE FROM users WHERE id= '{userdata}'")
-            print(userdata['id']);
+            self.cur.execute(f"DELETE FROM users WHERE id= {userdata}")
+            print(userdata);
             if self.cur.rowcount>0:
                 return "User data deleted successfully"
             else:
