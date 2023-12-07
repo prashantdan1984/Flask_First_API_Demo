@@ -30,9 +30,12 @@ class user_model():
         print(result)
         if len(result) > 0:
             temp = make_response({"payload":result}, 200) #json.dumps(result)
+            temp.headers ['Access-Control-Allow-Origin'] = "*"
             return temp
         else:
-            return make_response({"message":"No Data Found"}, 204)
+            temp = make_response({"message":"No Data Found"}, 204)
+            temp.headers ['Access-Control-Allow-Origin'] = "*"
+            return temp
 
     def user_getall_model(self, name):
         #business logic
@@ -42,16 +45,19 @@ class user_model():
         print(result)
         if len(result) > 0:
             temp = make_response({"payload":result}, 200) #json.dumps(result)
+            temp.headers ['Access-Control-Allow-Origin'] = "*"
             return temp
         else:
-            return make_response({"message":"No Data Found"}, 204)
+            temp = make_response({"message":"No Data Found"}, 204)
+            temp.headers ['Access-Control-Allow-Origin'] = "*"
+            return temp
         
     def user_addone_model(self, userdata):
         #business logic
         #Query execution code.
         #print(userdata['email_id']); 
         self.cur.execute(f"INSERT INTO users(username, email_id, phone_no, password) VALUES ('{userdata['username']}', '{userdata['email_id']}', '{userdata['phone_no']}', '{userdata['password']}')")
-        return make_response({"message":"This is user addone model"}, 201)
+        return make_response({"message":"User created Successfully"}, 200)
     
     def user_update_model(self, userdata):
         #business logic
@@ -59,9 +65,9 @@ class user_model():
         self.cur.execute(f"UPDATE users SET username= '{userdata['username']}', email_id= '{userdata['email_id']}', phone_no= '{userdata['phone_no']}', password= '{userdata['password']}' WHERE id= {userdata['id']}")
         print(userdata['id']);
         if self.cur.rowcount>0:
-            return make_response({"message":"User data update successfully"}, 201)
+            return make_response({"message":"User data update successfully"}, 200)
         else:
-            return make_response({"message":"nothing to update"}, 204)
+            return make_response({"message":"nothing to update"}, 202)
         
     def user_delete_model(self, userdata):
         #business logic
@@ -72,15 +78,30 @@ class user_model():
             self.cur.execute(f"DELETE FROM users WHERE id= {userdata}")
             print(userdata);
             if self.cur.rowcount>0:
-                return make_response({"message":"User data deleted successfully"}, 201)
+                return make_response({"message":"User data deleted successfully"}, 200)
             else:
-                return make_response({"message":"Nothing to delete"}, 204)
+                return make_response({"message":"Nothing to delete"}, 202)
         else:
             print("Not an integer", type(userdata))
             self.cur.execute(f"DELETE FROM users WHERE id= {userdata['id']}")
             print(userdata['id']);
             if self.cur.rowcount>0:
-                return make_response({"message":"User data deleted successfully"}, 201)
+                return make_response({"message":"User data deleted successfully"}, 200)
             else:
-                return make_response({"message":"Nothing to delete"}, 204)
+                return make_response({"message":"Nothing to delete"}, 202)
     
+    def user_patch_model(self, userdata, id):
+        #"UPDATE users SET username= '{userdata['username']}', email_id= '{userdata['email_id']}', phone_no= '{userdata['phone_no']}', password= '{userdata['password']}' WHERE id= {userdata['id']}"
+        qry = f"UPDATE users SET "
+        for key in userdata:
+            if key != "id":
+                qry += f" {key} = '{userdata[key]}',"
+        qry = qry[:-1] + f" WHERE id = {id}"
+        #qry += f"WHERE id = {userdata['id']}"
+        self.cur.execute(qry)
+        #return qry
+        if self.cur.rowcount>0:
+            return make_response({"message":"User data update successfully"}, 200)
+        else:
+            return make_response({"message":"nothing to update"}, 202)
+         
