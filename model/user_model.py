@@ -62,6 +62,7 @@ class user_model():
     def user_update_model(self, userdata):
         #business logic
         #Query execution code.
+        print(f"UPDATE users SET username= '{userdata['username']}', email_id= '{userdata['email_id']}', phone_no= '{userdata['phone_no']}', password= '{userdata['password']}' WHERE id= {userdata['id']}")
         self.cur.execute(f"UPDATE users SET username= '{userdata['username']}', email_id= '{userdata['email_id']}', phone_no= '{userdata['phone_no']}', password= '{userdata['password']}' WHERE id= {userdata['id']}")
         print(userdata['id']);
         if self.cur.rowcount>0:
@@ -105,3 +106,25 @@ class user_model():
         else:
             return make_response({"message":"nothing to update"}, 202)
          
+    def user_pagination_model(self, limit, page):
+       #return "Page model"
+       limit= int(limit)
+       page = int(page)
+       start = (page * limit) - limit
+       qry = f"SELECT * FROM users LIMIT {start}, {limit}"
+       self.cur.execute(qry)
+       result = self.cur.fetchall()
+       print(limit, page, "Page model", result)
+       if len(result) > 0 :
+            res = make_response({"payload" : result, "page_no" : page, "limit_no" : limit}, 200)
+            return res
+       else:
+            return make_response({"message": "No data found"}, 204)  
+    
+    def user_upload_avatar_model(self, uid, img_filepath):
+        #return f"UPDATE users SET user_pic = '{img_filepath}' WHERE id= {uid}"
+        self.cur.execute(f"UPDATE users SET user_pic = '{img_filepath}' WHERE id= '{uid}'")
+        if self.cur.rowcount>0:
+            return make_response({"message":"User profile pic uploaded successfully", "user_pic" : img_filepath}, 200)
+        else:
+            return make_response({"message":"nothing to uplod"}, 202)
