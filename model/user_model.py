@@ -55,7 +55,7 @@ class user_model():
     def user_addone_model(self, userdata):
         #business logic
         #Query execution code.
-        #print(userdata['email_id']); 
+        #print(userdata['email_id']); flask
         self.cur.execute(f"INSERT INTO users(username, email_id, phone_no, password) VALUES ('{userdata['username']}', '{userdata['email_id']}', '{userdata['phone_no']}', '{userdata['password']}')")
         return make_response({"message":"User created Successfully"}, 200)
     
